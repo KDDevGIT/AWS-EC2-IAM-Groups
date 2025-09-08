@@ -21,3 +21,21 @@ variable "project_suffix" {
   type = string
   default = "dev"
 }
+
+variable "instance_type" {
+  description = "EC2 Instance Type"
+  type = string
+  default = "t3.micro"
+}
+
+variable "allow_ssh" {
+  description = "Toggle to open SSH to IP (NA for SSM)"
+  type = bool
+  default = false
+}
+
+variable "my_ip_cidr" {
+  description = "IP/CIDR if Allow SSH is enabled"
+  type = string
+  default = "0.0.0.0/0"
+}
