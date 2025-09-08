@@ -17,3 +17,18 @@ resource "aws_s3_bucket_public_access_block" "lab" {
   restrict_public_buckets = true 
 }
 
+# IAM Role for EC2
+data "aws_iam_policy_document" "assume_ec2" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ec2_role" {
+  name = "${local.name_prefix}-role"
+  assume_role_policy = data.aws_iam_policy_document.assume_ec2.json 
+}
