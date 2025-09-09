@@ -56,3 +56,13 @@ data "aws_iam_policy_document" "s3_bucket_access" {
     ]
   }
 }
+
+resource "aws_iam_policy" "s3_bucket_access" {
+  name = "${local.name_prefix}-s3-access"
+  policy = data.aws_iam_policy_document.s3_bucket_access.json 
+}
+
+resource "aws_iam_role_policy_attachment" "s3_attach" {
+  role = aws_iam_role.ec2_role.name 
+  policy_arn = aws_iam_policy.s3_bucket_access.arn 
+}
