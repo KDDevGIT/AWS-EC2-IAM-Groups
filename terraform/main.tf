@@ -39,4 +39,20 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-
+# Inline S3 Policy S3 Bucket Template
+data "aws_iam_policy_document" "s3_bucket_access" {
+  statement {
+    sid = "ListBucket"
+    actions = ["s3:ListBucket"]
+    resources = [
+        "arn:aws:s3:::${aws_s3_bucket.lab.bucket}"
+    ]
+  }
+  statement {
+    sid = "ObjectRW"
+    actions = ["s3:GetObject","s3:PutObject","s3:DeleteObject"]
+    resources = [
+        "arn:aws:s3:::${aws_s3_bucket.lab.bucket}/*"
+    ]
+  }
+}
