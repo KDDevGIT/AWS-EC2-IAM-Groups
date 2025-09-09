@@ -114,3 +114,17 @@ data "aws_ami" "al2023" {
     values = ["al2023-ami-*-x86_64"]
   }
 }
+
+# EC2 Instance + Profile
+resource "aws_instance" "app" {
+  ami = data.aws_ami.al2023.id 
+  instance_type = var.instance_type
+  subnet_id = data.aws_subnets.default.id 
+  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  associate_public_ip_address = true 
+  user_data = file("${path.module}/user_data.sh")
+  tags = {
+    Name = "${local.name_prefix}-ec2"
+  }
+}
