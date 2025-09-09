@@ -71,3 +71,37 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   name = "${local.name_prefix}-instance-profile"
   role = aws_iam_role.ec2_role.name 
 }
+
+# Simple Networking
+data "aws_vpc" "default" {
+  filter {
+    name = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+# SG with Outbound Open, Inbound SSH 
+resource "aws_security_group" "ec2_sg" {
+  name = "${local.name_prefix}-sg"
+  description = "EC2 Security Group"
+  vpc_id = data.aws_vpc.default.id 
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  dynamic "ingress" {
+    for_each = var.allow_ssh ? [1] : []
+    content {
+      from_port = 22
+      to_port = 22
+      protocol = "tcp"
+      cidr_blocks = [var.my_ip_cidr]
+      description = "Inbound SSH"
+    }
+  }
+}
+
