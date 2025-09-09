@@ -66,3 +66,8 @@ resource "aws_iam_role_policy_attachment" "s3_attach" {
   role = aws_iam_role.ec2_role.name 
   policy_arn = aws_iam_policy.s3_bucket_access.arn 
 }
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "${local.name_prefix}-instance-profile"
+  role = aws_iam_role.ec2_role.name 
+}
